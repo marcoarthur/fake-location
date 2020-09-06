@@ -6,12 +6,10 @@ use Syntax::Keyword::Try;
 use Fake::Location;
 use constant LOCATIONS => 5;
 
-my $mode = "devel";
-
 my @build_args =
   ( [ bad => { fail_rate => 'not number' } ], [ good => { fail_rate => 0.8 } ], [ good => {} ], );
 
-my ( $l, $pos, $i, @res );
+my ( $l, $pos, $i, @hist );
 
 subtest 'Initialize Fake::Location' => sub {
 
@@ -56,16 +54,16 @@ subtest 'Get locations' => sub {
             $pos = undef;
         }
 
-        push @res, $pos;
+        push @hist, $pos;
     }
 };
 
 ok $l->stop, "Stop location service";
 
 TODO: {
-    local $TODO = "have to redesign history";
+    local $TODO = "redesign history";
     my @h = map { $_->[1] } $l->history->@*;
-    is_deeply \@res, \@h, "location history";
+    is_deeply \@hist, \@h, "location history";
 }
 
 done_testing;
