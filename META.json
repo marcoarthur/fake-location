@@ -1,10 +1,10 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Can give location at some sampling rate. Will simulate a random walk.",
    "author" : [
       "Marco Arthur <arthurpbs@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.8, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.10, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -42,7 +42,12 @@
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.008001"
+            "Math::Random::Secure" : "0",
+            "Mojo::Base" : "0",
+            "Moo" : "0",
+            "Types::Standard" : "0",
+            "namespace::autoclean" : "0",
+            "perl" : "5.028"
          }
       },
       "test" : {
@@ -53,6 +58,6 @@
    },
    "release_status" : "unstable",
    "version" : "0.01",
-   "x_serialization_backend" : "JSON::PP version 4.04",
+   "x_serialization_backend" : "JSON::PP version 4.05",
    "x_static_install" : 1
 }

@@ -1,6 +1,7 @@
 # NAME
 
-Fake::Location - It's new $module
+Fake::Location - Can give location at some sampling rate. Will simulate a
+random walk.
 
 # SYNOPSIS
 
