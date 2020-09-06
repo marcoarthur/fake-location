@@ -51,8 +51,13 @@ has location_p => (
 
 has _loop => ( is => 'rw', );
 
+sub frequency ($self ) {
+    return 1/$self->sample_rate;
+}
+
 sub start ($self) {
 
+    # save the sampler loop
     $self->_loop(
         Mojo::IOLoop->recurring(
             1 / $self->sample_rate => sub {
@@ -61,20 +66,40 @@ sub start ($self) {
         )
     ) unless $self->is_running;
 
-    $self->location_p( Mojo::Promise->resolve( $self->_rand_location ) );
+    # first location is always resolvable
+    $self->location_p(
+        Mojo::Promise->new(
+            sub ( $resolve, $reject ) {
+                Mojo::IOLoop->timer(
+                    1 / $self->sample_rate => sub {
+                        my $loc = $self->_rand_location;
+                        $resolve->( $loc );
+                    }
+                );
+            }
+        )
+    );
     $self->is_running(1);
 }
 
 sub location ( $self ) {
     my $loc;
     my $err_msg;
+
+    croak "Not running yet" unless $self->is_running;
+
+    # get current promise location
     $self->location_p->then( sub { $loc = shift } )->catch(
         sub ($err) {
             $err_msg = "Error getting location: $err";
             warn $err_msg;
         }
     )->wait;
+
+    # set next promise location
     $self->location_p( $self->_next_location_p );
+
+    # current location unavailable: throw error
     $self->throw( err => $err_msg ) if $err_msg;
 
     return $loc;
@@ -83,6 +108,7 @@ sub location ( $self ) {
 sub stop ($self) {
     croak "I'm not running yet" unless $self->is_running;
     Mojo::IOLoop->remove( $self->_loop );
+    $self->is_running(0);
     return 1;
 }
 
