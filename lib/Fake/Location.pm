@@ -86,7 +86,7 @@ sub location ( $self ) {
     my $loc;
     my $err_msg;
 
-    croak "Not running yet" unless $self->is_running;
+    croak "Error:  You should call start() first" unless $self->is_running;
 
     # get current promise location
     $self->location_p->then( sub { $loc = shift } )->catch(
